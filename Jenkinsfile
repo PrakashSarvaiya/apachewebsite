@@ -31,14 +31,15 @@ pipeline {
             }
         }
         stage('Deploy to Kubernetes') {
-            steps {
-                script{
-                     kubernetesDeploy (configs: 'deployment.yml' ,kubeconfigId: 'k8sconfig')
-                   
-                    }
-                }
-            }
+    steps {
+        withKubeConfig([credentialsId: 'k8sconfig']) {
+            sh 'kubectl apply -f deployment.yml'
+            sh 'kubectl apply -f service.yml'
         }
+    }
+}
+
+        
     }
 
 
